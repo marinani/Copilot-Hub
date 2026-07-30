@@ -1,0 +1,42 @@
+{
+  "fluxos": [
+    {
+      "id": "CF-001",
+      "link": "../../discovery/DISC-03-CATALOGO-DE-FLUXOS.md#cf-001",
+      "telas": [
+        { "id": "TELA-010", "link": "../../discovery/TELA-010-AtendimentoPessoaSup.md" },
+        { "id": "TELA-012", "link": "../../discovery/TELA-012-CriarFluxoProcesso.md" }
+      ],
+      "endpoints": ["/api/processo", "/api/fluxo"],
+      "tabelas": ["processo", "processo_fluxo"]
+    }
+    // ... outros fluxos ...
+  ],
+  "telas": [
+    {
+      "id": "TELA-010",
+      "link": "../../discovery/TELA-010-AtendimentoPessoaSup.md",
+      "fluxos": ["CF-001"],
+      "endpoints": ["/api/processo"],
+      "tabelas": ["processo", "processo_fluxo"]
+    }
+    // ... outras telas ...
+  ],
+  "endpoints": [
+    {
+      "id": "/api/processo",
+      "telas": ["TELA-010", "TELA-012"],
+      "tabelas": ["processo", "processo_fluxo"]
+    }
+    // ... outros endpoints ...
+  ],
+  "tabelas": [
+    {
+      "id": "processo",
+      "telas": ["TELA-010", "TELA-012"],
+      "endpoints": ["/api/processo"],
+      "fluxos": ["CF-001"]
+    }
+    // ... outras tabelas ...
+  ]
+}

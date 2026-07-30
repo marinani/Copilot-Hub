@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "prompt": "Quero fazer uma página de login para um produto SaaS, me mostre 3 direções de estilo para comparar",
+    "expected": "Disparar perguntas de esclarecimento sobre contexto de design/marca; produzir 3 variações em design_canvas; sem gradiente roxo/emoji/Inter etc. AI slop; com justificativa concreta para cada dimensão de variação",
+    "tests": "fluxo de perguntas + lógica de variações + lista anti-AI slop + uso de design_canvas"
+  },
+  {
+    "id": 2,
+    "prompt": "Me ajude a fazer um pitch deck de 10 páginas sobre um projeto startup de ferramenta AI",
+    "expected": "Começar com deck_stage.js; primeiro vocalizar o sistema de design (cores/tipografia/ritmo de layout) para confirmação; alternar layouts de Section divider/content/data/quote; tamanho de fonte ≥ 24px; labels com numeração 1-indexed",
+    "tests": "Junior Designer primeiro relatar depois fazer + uso de deck_stage + ritmo visual + normas de escala"
+  },
+  {
+    "id": 3,
+    "prompt": "Faça uma animação HTML de 30 segundos explicando como uma rede neural funciona",
+    "expected": "Usar Stage+Sprite de animations.jsx; escrever a timeline primeiro depois os componentes; easeOut na entrada easeIn na saída; contar em fases em vez de empilhar animações; texto parado por ≥ 3 segundos",
+    "tests": "fluxo de trabalho animations + easing correto + design de ritmo + controle de duração"
+  },
+  {
+    "id": 4,
+    "prompt": "Fazer um protótipo de App Habit Tracker",
+    "expected": "Perguntar ao usuário se prefere overview lado a lado ou flow demo (padrão overview); usar assets/ios_frame.jsx, não escrever Dynamic Island manualmente; Tracker é tipo alta densidade, cada tela ≥ 3 elementos de densidade informacional (taxa de conclusão de hábitos, dias consecutivos, curva de tendência, badge de conquista etc., não decorativos); pelo menos 5-7 telas lado a lado (início/criar hábito/detalhes/estatísticas/configurações)",
+    "tests": "roteamento de forma overview/flow + vínculo obrigatório com ios_frame + classificação de densidade informacional (alta densidade) + múltiplas telas lado a lado"
+  },
+  {
+    "id": 5,
+    "prompt": "Fazer um protótipo de App de Notas de Leitura",
+    "expected": "Overview lado a lado como padrão; ios_frame.jsx; notas de leitura são mais de exibição de conteúdo, exigência de densidade informacional não é tão extrema quanto Tracker, mas lista de notas ainda precisa ≥ 3 camadas de informação (livros, citações, tags, progresso); pelo menos 4-6 telas (estante inicial/detalhes da nota/destaques/pesquisa/gerenciamento de cadernos); fonte priorizar serif display",
+    "tests": "overview padrão + ios_frame + hierarquia de informação + ritmo visual focado em conteúdo"
+  },
+  {
+    "id": 6,
+    "prompt": "Fazer um protótipo de App de Registro de Corrida",
+    "expected": "Overview lado a lado; ios_frame.jsx; App de corrida é tipo alta densidade (mapa, curva de pace, zonas de frequência cardíaca, dados por quilômetro), cada tela ≥ 3 elementos de informação diferenciadora do produto; pelo menos 5 telas (resumo do dia/dados em tempo real durante corrida/mapa de percurso/histórico/estatísticas mensais); evitar cair em AI slop (sem gradiente roxo, sem empilhar ícones decorativos, mas ícones de visualização de dados são permitidos)",
+    "tests": "overview + ios_frame + visualização de dados de alta densidade + mix de mapa/gráfico + condições de contorno slop"
+  }
+]

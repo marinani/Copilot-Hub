@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StrideLog · protótipo overview · Registro de Corrida</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..800&display=swap" rel="stylesheet" />
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    html, body { margin: 0; min-height: 100%; background: #e8e4de; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    .page-title {
+      max-width: 1200px; margin: 0 auto; padding: 28px 32px 8px;
+      font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: 26px; color: #1c1917;
+    }
+    .page-sub { max-width: 1200px; margin: 0 auto; padding: 0 32px 20px; font-size: 14px; color: #57534e; }
+  </style>
+</head>
+<body>
+  <h1 class="page-title">StrideLog</h1>
+  <p class="page-sub">Overview lado a lado · alta densidade (mapa, pace, FC por zona, splits) · 5 telas</p>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+
+    /* ——— assets/ios_frame.jsx (inline, file:// safe) ——— */
+    const iosFrameStyles = {
+      wrapper: {
+        display: 'inline-block',
+        padding: 12,
+        background: '#000',
+        borderRadius: 60,
+        boxShadow: '0 0 0 2px #1f2937, 0 20px 60px rgba(0,0,0,0.3)',
+        position: 'relative',
+      },
+      screen: {
+        position: 'relative',
+        borderRadius: 48,
+        overflow: 'hidden',
+        background: '#fff',
+      },
+      statusBar: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 54,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 32px 0 32px',
+        fontSize: 16,
+        fontWeight: 600,
+        fontFamily: '-apple-system, "SF Pro Text", sans-serif',
+        zIndex: 20,
+        pointerEvents: 'none',
+      },
+      dynamicIsland: {
+        position: 'absolute',
+        top: 12,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 124,
+        height: 36,
+        background: '#000',
+        borderRadius: 999,
+        zIndex: 30,
+      },
+      statusIcons: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 6,
+      },
+      signalIcon: {
+        display: 'flex',
+        alignItems: 'flex-end',
+        gap: 2,
+        height: 12,
+      },
+      signalBar: {
+        width: 3,
+        background: 'currentColor',
+        borderRadius: 1,
+      },
+      batteryIcon: {
+        width: 26,
+        height: 12,
+        border: '1.5px solid currentColor',
+        borderRadius: 3,
+        padding: 1,
+        position: 'relative',
+        opacity: 0.8,
+      },
+      batteryCap: {
+        position: 'absolute',
+        top: 3,
+        right: -3,
+        width: 2,
+        height: 6,
+        background: 'currentColor',
+        borderRadius: '0 1px 1px 0',
+      },
+      content: {
+        position: 'absolute',
+        top: 54,
+        left: 0,
+        right: 0,
+        bottom: 34,
+        overflow: 'auto',
+      },
+      homeIndicator: {
+        position: 'absolute',
+        bottom: 10,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 140,
+        height: 5,
+        background: 'rgba(0,0,0,0.3)',
+        borderRadius: 999,
+        zIndex: 10,
+      },
+      homeIndicatorDark: {
+        background: 'rgba(255,255,255,0.5)',
+      },
+    };
+
+    function IosFrame({
+      children,
+      width = 393,
+      height = 852,
+      time = '9:41',
+      battery = 100,
+      darkMode = false,
+      showStatusBar = true,
+      showDynamicIsland = true,
+      showHomeIndicator = true,
+    }) {
+      const textColor = darkMode ? '#fff' : '#000';
+      return (
+        <div style={iosFrameStyles.wrapper}>
+          <div style={{
+            ...iosFrameStyles.screen,
+            width,
+            height,
+            background: darkMode ? '#0c0c0c' : '#faf8f5',
+          }}>
+            {showStatusBar && (
+              <div style={{ ...iosFrameStyles.statusBar, color: textColor }}>
+                <span>{time}</span>
+                <div style={iosFrameStyles.statusIcons}>
+                  <div style={iosFrameStyles.signalIcon}>
+                    <div style={{ ...iosFrameStyles.signalBar, height: 4 }} />
+                    <div style={{ ...iosFrameStyles.signalBar, height: 6 }} />
+                    <div style={{ ...iosFrameStyles.signalBar, height: 9 }} />
+                    <div style={{ ...iosFrameStyles.signalBar, height: 11 }} />
+                  </div>
+                  <svg width="16" height="12" viewBox="0 0 16 12" fill="none" style={{ color: textColor }}>
+                    <path d="M8 11.5a1 1 0 100-2 1 1 0 000 2z" fill="currentColor" />
+                    <path d="M3 7.5a7 7 0 0110 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+                    <path d="M1 4.5a11 11 0 0114 0" stroke="currentColor" strokeWidth="1.3" fill="none" strokeLinecap="round" opacity="0.7" />
+                  </svg>
+                  <div style={iosFrameStyles.batteryIcon}>
+                    <div style={{
+                      width: `${battery}%`,
+                      height: '100%',
+                      background: 'currentColor',
+                      borderRadius: 1,
+                      opacity: 0.9,
+                    }} />
+                    <div style={iosFrameStyles.batteryCap} />
+                  </div>
+                </div>
+              </div>
+            )}
+            {showDynamicIsland && <div style={iosFrameStyles.dynamicIsland} />}
+            <div style={iosFrameStyles.content}>{children}</div>
+            {showHomeIndicator && (
+              <div style={{
+                ...iosFrameStyles.homeIndicator,
+                ...(darkMode ? iosFrameStyles.homeIndicatorDark : {}),
+              }} />
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    const accent = '#b45309';
+    const accentMuted = '#ca8a04';
+    const ink = '#1c1917';
+    const dim = '#78716c';
+    const hair = 'rgba(28,25,23,0.08)';
+    const serif = '"Newsreader", Georgia, serif';
+
+    function PaceCurve({ values, w = 320, h = 56, color = accent }) {
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const pad = 4;
+      const pts = values.map((v, i) => {
+        const x = pad + (i / (values.length - 1)) * (w - pad * 2);
+        const t = max === min ? 0.5 : (v - min) / (max - min);
+        const y = h - pad - t * (h - pad * 2);
+        return `${x},${y}`;
+      }).join(' ');
+      return (
+        <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-label="Curva de pace">
+          <polyline fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" points={pts} />
+          {[0, Math.floor(values.length / 2), values.length - 1].map((i) => (
+            <circle key={i} cx={pad + (i / (values.length - 1)) * (w - pad * 2)} cy={h - pad - ((values[i] - min) / (max - min || 1)) * (h - pad * 2)} r="3" fill={color} />
+          ))}
+        </svg>
+      );
+    }
+
+    function HRZoneBar({ zones, dark, subtitle = 'Tempo em zona (últimos 20 min)' }) {
+      const total = zones.reduce((a, z) => a + z.pct, 0);
+      const colors = ['#0f766e', '#14b8a6', '#eab308', '#ea580c', '#b91c1c'];
+      return (
+        <div style={{ marginTop: 8 }}>
+          <div style={{ fontSize: 11, color: dark ? '#a8a29e' : dim, marginBottom: 4 }}>{subtitle}</div>
+          <div style={{ display: 'flex', height: 14, borderRadius: 6, overflow: 'hidden', background: dark ? '#27272a' : '#e7e5e4' }}>
+            {zones.map((z, i) => {
+              const w = (z.pct / total) * 100;
+              return (
+                <div key={z.name} style={{ width: `${w}%`, background: colors[i], minWidth: z.pct > 0 ? 2 : 0 }} title={`${z.name}: ${z.pct}%`} />
+              );
+            })}
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontSize: 10, color: dark ? '#78716c' : dim }}>
+            {zones.map((z) => <span key={z.name}>{z.name} {z.pct}%</span>)}
+          </div>
+        </div>
+      );
+    }
+
+    function MapRoute({ dark }) {
+      const stroke = dark ? '#fbbf24' : accent;
+      return (
+        <svg viewBox="0 0 320 200" width="100%" height={200} style={{ borderRadius: 12, background: dark ? '#18181b' : '#e7e5e4' }} aria-label="Mapa do percurso">
+          <rect x="0" y="0" width="320" height="200" fill={dark ? '#1c1917' : '#d6d3d1'} opacity="0.35" />
+          {[[20,40,80,30],[100,20,40,120],[200,60,60,80],[40,150,120,40]].map((r, i) => (
+            <rect key={i} x={r[0]} y={r[1]} width={r[2]} height={r[3]} rx="4" fill={dark ? '#3f3f46' : '#a8a29e'} opacity="0.45" />
+          ))}
+          <polyline
+            fill="none"
+            stroke={stroke}
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            points="48,160 90,120 140,100 190,70 240,85 270,110 288,150"
+          />
+          <circle cx="48" cy="160" r="7" fill="#16a34a" stroke="#fff" strokeWidth="2" />
+          <circle cx="288" cy="150" r="7" fill={stroke} stroke="#fff" strokeWidth="2" />
+        </svg>
+      );
+    }
+
+    function ElevationStrip({ dark }) {
+      const pts = '0,40 40,35 80,50 120,28 160,45 200,22 240,38 280,30 320,48';
+      return (
+        <div style={{ marginTop: 10 }}>
+          <div style={{ fontSize: 11, color: dark ? '#a8a29e' : dim }}>Perfil de elevação (m)</div>
+          <svg viewBox="0 0 320 56" width="100%" height={56} preserveAspectRatio="none">
+            <polyline fill={dark ? 'rgba(234,179,8,0.15)' : 'rgba(180,83,9,0.12)'} stroke={dark ? '#fbbf24' : accent} strokeWidth="2" points={pts} />
+          </svg>
+        </div>
+      );
+    }
+
+    function ScreenDaySummary() {
+      const paceSeries = [5.42, 5.38, 5.51, 5.33, 5.28, 5.44, 5.31];
+      return (
+        <div style={{ padding: '12px 16px 24px', color: ink, minHeight: '100%' }}>
+          <div style={{ fontFamily: serif, fontSize: 22, fontWeight: 600 }}>Hoje</div>
+          <div style={{ fontSize: 12, color: dim, marginTop: 2 }}>28 abr · treino leve + strides</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 14 }}>
+            <div style={{ border: `1px solid ${hair}`, borderRadius: 12, padding: 12 }}>
+              <div style={{ fontSize: 11, color: dim }}>Volume</div>
+              <div style={{ fontSize: 24, fontWeight: 700, fontFamily: serif }}>12,4 <span style={{ fontSize: 14, fontWeight: 500 }}>km</span></div>
+              <div style={{ fontSize: 11, color: accent, marginTop: 4 }}>+18% vs média 4 sem</div>
+            </div>
+            <div style={{ border: `1px solid ${hair}`, borderRadius: 12, padding: 12 }}>
+              <div style={{ fontSize: 11, color: dim }}>Carga TRIMP</div>
+              <div style={{ fontSize: 24, fontWeight: 700, fontFamily: serif }}>86</div>
+              <div style={{ fontSize: 11, color: dim, marginTop: 4 }}>Zona 2 predominante</div>
+            </div>
+          </div>
+          <div style={{ border: `1px solid ${hair}`, borderRadius: 12, padding: 12, marginTop: 10 }}>
+            <div style={{ fontSize: 11, color: dim, marginBottom: 6 }}>Pace médio por trecho (min/km)</div>
+            <PaceCurve values={paceSeries} w={300} h={52} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: dim, marginTop: 4 }}>
+              <span>aquec.</span><span>corpo</span><span>strides</span>
+            </div>
+          </div>
+          <div style={{ marginTop: 12, padding: 12, background: '#fff7ed', borderRadius: 12, border: '1px solid rgba(180,83,9,0.2)' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#9a3412' }}>Recuperação estimada</div>
+            <div style={{ fontSize: 13, marginTop: 4, color: '#7c2d12' }}>Disponível para intervalado em <strong>14 h</strong> (FC repouso −6% vs ontem).</div>
+          </div>
+        </div>
+      );
+    }
+
+    function ScreenLiveRun() {
+      const paceLive = [5.2, 5.15, 5.08, 5.11, 5.05, 4.98, 5.02, 5.0];
+      const zones = [
+        { name: 'Z1', pct: 8 },
+        { name: 'Z2', pct: 42 },
+        { name: 'Z3', pct: 28 },
+        { name: 'Z4', pct: 14 },
+        { name: 'Z5', pct: 8 },
+      ];
+      const splits = [
+        { km: 7, pace: '5:02', hr: 156, elev: '+12' },
+        { km: 8, pace: '4:58', hr: 162, elev: '+8' },
+      ];
+      return (
+        <div style={{ padding: '12px 16px 24px', color: '#fafaf9', minHeight: '100%', background: '#0c0c0c' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+            <span style={{ fontSize: 12, color: '#a8a29e' }}>Corrida contínua</span>
+            <span style={{ fontSize: 11, color: '#71717a' }}>GPS · GLONASS</span>
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 8 }}>
+            <div style={{ fontFamily: serif, fontSize: 44, fontWeight: 600, letterSpacing: '-0.02em' }}>42:18</div>
+            <div style={{ fontSize: 12, color: '#a8a29e' }}>tempo decorrido · lap 8,2 km</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 14, textAlign: 'center' }}>
+            <div style={{ background: '#18181b', borderRadius: 10, padding: 10 }}>
+              <div style={{ fontSize: 10, color: '#71717a' }}>Ritmo instant.</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: '#fbbf24' }}>5:01</div>
+              <div style={{ fontSize: 10, color: '#52525b' }}>min/km</div>
+            </div>
+            <div style={{ background: '#18181b', borderRadius: 10, padding: 10 }}>
+              <div style={{ fontSize: 10, color: '#71717a' }}>FC média lap</div>
+              <div style={{ fontSize: 20, fontWeight: 700 }}>158</div>
+              <div style={{ fontSize: 10, color: '#52525b' }}>bpm</div>
+            </div>
+            <div style={{ background: '#18181b', borderRadius: 10, padding: 10 }}>
+              <div style={{ fontSize: 10, color: '#71717a' }}>Elevação lap</div>
+              <div style={{ fontSize: 20, fontWeight: 700 }}>+24 m</div>
+              <div style={{ fontSize: 10, color: '#52525b' }}>acum. +180 m</div>
+            </div>
+          </div>
+          <div style={{ marginTop: 14, padding: 10, background: '#18181b', borderRadius: 12 }}>
+            <div style={{ fontSize: 11, color: '#a8a29e' }}>Pace últimos 800 m (min/km)</div>
+            <PaceCurve values={paceLive} w={300} h={48} color="#fbbf24" />
+          </div>
+          <HRZoneBar zones={zones} dark />
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 11, color: '#a8a29e', marginBottom: 6 }}>Splits parciais (km)</div>
+            <table style={{ width: '100%', fontSize: 11, borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ color: '#71717a', textAlign: 'left' }}>
+                  <th style={{ padding: '4px 0' }}>Km</th><th>Pace</th><th>FC méd.</th><th>Δ alt.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {splits.map((r) => (
+                  <tr key={r.km} style={{ borderTop: '1px solid #27272a' }}>
+                    <td style={{ padding: '6px 0' }}>{r.km}</td><td>{r.pace}</td><td>{r.hr}</td><td style={{ color: '#86efac' }}>{r.elev}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    function ScreenMap() {
+      const kmRows = [
+        { k: 1, p: '5:22', hr: 138, dev: '+2 s' },
+        { k: 2, p: '5:18', hr: 142, dev: '−4 s' },
+        { k: 3, p: '5:31', hr: 148, dev: '+9 s' },
+      ];
+      return (
+        <div style={{ padding: '12px 16px 24px', color: ink }}>
+          <div style={{ fontFamily: serif, fontSize: 20, fontWeight: 600 }}>Percurso</div>
+          <div style={{ fontSize: 12, color: dim, marginTop: 2 }}>Terça · 10,2 km · asfalto / parque</div>
+          <MapRoute dark={false} />
+          <ElevationStrip dark={false} />
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 11, color: dim, marginBottom: 6 }}>Pace por quilômetro vs alvo 5:20</div>
+            <table style={{ width: '100%', fontSize: 12, borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ color: dim, fontSize: 11, textAlign: 'left' }}>
+                  <th>Km</th><th>Pace</th><th>FC méd.</th><th>Δ alvo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {kmRows.map((r) => (
+                  <tr key={r.k} style={{ borderTop: `1px solid ${hair}` }}>
+                    <td style={{ padding: '8px 0' }}>{r.k}</td><td style={{ fontWeight: 600 }}>{r.p}</td><td>{r.hr} bpm</td><td style={{ color: r.dev.startsWith('−') ? '#15803d' : '#b45309' }}>{r.dev}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    function ScreenHistory() {
+      const rows = [
+        { d: '26/04', name: 'Longão Z2', km: '18,2', pace: '5:24', hr: '148', load: '124' },
+        { d: '24/04', name: 'Intervalado 6×800', km: '11,0', pace: '5:02', hr: '162', load: '98' },
+        { d: '22/04', name: 'Recuperação', km: '8,5', pace: '5:45', hr: '132', load: '52' },
+        { d: '20/04', name: 'Prova 10 km', km: '10,1', pace: '4:38', hr: '171', load: '142' },
+      ];
+      const [filter, setFilter] = useState('todos');
+      const list = useMemo(() => (filter === 'prova' ? rows.filter((r) => r.name.includes('Prova')) : rows), [filter]);
+      return (
+        <div style={{ padding: '12px 16px 24px', color: ink }}>
+          <div style={{ fontFamily: serif, fontSize: 20, fontWeight: 600 }}>Histórico</div>
+          <div style={{ fontSize: 12, color: dim, marginTop: 2 }}>Últimas 4 sessões · ordenado por data</div>
+          <div style={{ display: 'flex', gap: 8, marginTop: 12 }} data-testid="filters">
+            {['todos', 'prova'].map((f) => (
+              <button
+                key={f}
+                type="button"
+                data-testid={`filter-${f}`}
+                onClick={() => setFilter(f)}
+                style={{
+                  cursor: 'pointer',
+                  border: filter === f ? `2px solid ${accent}` : `1px solid ${hair}`,
+                  background: filter === f ? '#fff7ed' : '#fff',
+                  borderRadius: 999,
+                  padding: '6px 14px',
+                  fontSize: 12,
+                  fontWeight: filter === f ? 600 : 400,
+                  color: ink,
+                }}
+              >
+                {f === 'todos' ? 'Todos' : 'Só provas'}
+              </button>
+            ))}
+          </div>
+          <div style={{ marginTop: 12, fontSize: 11, color: dim }}>{list.length} atividades</div>
+          <div style={{ marginTop: 8 }}>
+            {list.map((r) => (
+              <div
+                key={r.d + r.name}
+                style={{
+                  border: `1px solid ${hair}`,
+                  borderRadius: 12,
+                  padding: 12,
+                  marginBottom: 8,
+                  display: 'grid',
+                  gridTemplateColumns: '52px 1fr',
+                  gap: 8,
+                  alignItems: 'start',
+                }}
+              >
+                <div style={{ fontSize: 11, color: dim, fontWeight: 600 }}>{r.d}</div>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 14 }}>{r.name}</div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 14px', marginTop: 6, fontSize: 11, color: dim }}>
+                    <span><strong style={{ color: ink }}>{r.km}</strong> km</span>
+                    <span>pace méd. <strong style={{ color: ink }}>{r.pace}</strong></span>
+                    <span>FC méd. <strong style={{ color: ink }}>{r.hr}</strong> bpm</span>
+                    <span>carga <strong style={{ color: ink }}>{r.load}</strong></span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    function ScreenMonthly() {
+      const weeks = [32, 28, 41, 36, 22, 38, 45];
+      const max = Math.max(...weeks);
+      return (
+        <div style={{ padding: '12px 16px 24px', color: ink }}>
+          <div style={{ fontFamily: serif, fontSize: 20, fontWeight: 600 }}>Abril</div>
+          <div style={{ fontSize: 12, color: dim, marginTop: 2 }}>Volume, intensidade e consistência</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginTop: 12 }}>
+            <div style={{ border: `1px solid ${hair}`, borderRadius: 12, padding: 12 }}>
+              <div style={{ fontSize: 11, color: dim }}>Km acumulados</div>
+              <div style={{ fontSize: 26, fontWeight: 700, fontFamily: serif }}>182</div>
+              <div style={{ fontSize: 11, color: '#15803d' }}>Meta 175 km · +4%</div>
+            </div>
+            <div style={{ border: `1px solid ${hair}`, borderRadius: 12, padding: 12 }}>
+              <div style={{ fontSize: 11, color: dim }}>Sessões ≥ 10 km</div>
+              <div style={{ fontSize: 26, fontWeight: 700, fontFamily: serif }}>9</div>
+              <div style={{ fontSize: 11, color: dim }}>Longão máx. 24 km</div>
+            </div>
+          </div>
+          <div style={{ marginTop: 14, border: `1px solid ${hair}`, borderRadius: 12, padding: 12 }}>
+            <div style={{ fontSize: 11, color: dim, marginBottom: 8 }}>Km por semana (rolling 7 dias)</div>
+            <svg viewBox="0 0 280 100" width="100%" height={100}>
+              {weeks.map((v, i) => {
+                const bw = 32;
+                const h = (v / max) * 72;
+                const x = 8 + i * (bw + 4);
+                const y = 88 - h;
+                return <rect key={i} x={x} y={y} width={bw} height={h} rx="4" fill={i === weeks.length - 1 ? accent : '#d6d3d1'} />;
+              })}
+            </svg>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: dim }}>
+              <span>S1</span><span>S2</span><span>S3</span><span>S4</span><span>S5</span><span>S6</span><span>Hoje</span>
+            </div>
+          </div>
+          <div style={{ marginTop: 12, border: `1px solid ${hair}`, borderRadius: 12, padding: 12 }}>
+            <HRZoneBar
+              zones={[
+                { name: 'Z1', pct: 14 },
+                { name: 'Z2', pct: 38 },
+                { name: 'Z3', pct: 26 },
+                { name: 'Z4', pct: 15 },
+                { name: 'Z5', pct: 7 },
+              ]}
+              dark={false}
+              subtitle="Distribuição de FC — tempo total no mês"
+            />
+            <div style={{ fontSize: 11, color: dim, marginTop: 10 }}>
+              Ritmo de lesão: <strong style={{ color: ink }}>baixo</strong> — aumento de volume &lt; 10% vs março e 2 dias de força/semana.
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const screens = [
+      { id: 'day', label: 'Resumo do dia', Cmp: ScreenDaySummary, dark: false },
+      { id: 'live', label: 'Dados em tempo real (corrida)', Cmp: ScreenLiveRun, dark: true },
+      { id: 'map', label: 'Mapa de percurso + splits', Cmp: ScreenMap, dark: false },
+      { id: 'hist', label: 'Histórico', Cmp: ScreenHistory, dark: false },
+      { id: 'month', label: 'Estatísticas mensais', Cmp: ScreenMonthly, dark: false },
+    ];
+
+    function App() {
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 32,
+            padding: '8px 32px 48px',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
+          }}
+        >
+          {screens.map((s) => {
+            const Screen = s.Cmp;
+            return (
+              <div key={s.id}>
+                <div style={{ fontSize: 13, color: '#57534e', marginBottom: 8, fontStyle: 'italic', maxWidth: 393 }}>
+                  {s.label}
+                </div>
+                <IosFrame time="9:41" battery={84} darkMode={s.dark}>
+                  <Screen />
+                </IosFrame>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>

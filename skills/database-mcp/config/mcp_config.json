@@ -1,0 +1,11 @@
+﻿{
+  "engine": "postgresql",
+  "host": "localhost",
+  "port": 5432,
+  "database": "postgres",
+  "user": "postgres",
+  "password": "",
+  "schema": "public",
+  "description": "Database MCP Server Configuration",
+  "note": "Configure your database credentials here. For SQL Server, set engine to 'sqlserver' and port to 1433"
+}

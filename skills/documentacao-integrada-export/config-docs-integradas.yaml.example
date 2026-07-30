@@ -1,0 +1,220 @@
+﻿# Exemplo de configuração personalizada para documentacao-integrada-export
+#
+# Copie este arquivo para a raiz do seu projeto como:
+#   config-docs-integradas.yaml
+#
+# E customize conforme necessário.
+
+# ===================================================================
+# CONFIGURAÇÕES DE SITE
+# ===================================================================
+
+docs:
+  # Nome do site (aparece na aba do navegador)
+  site_name: "Documentação Integrada - Seu Projeto"
+
+  # Diretório de origem (documentação)
+  docs_root: "documentacao"
+
+  # Diretório de saída (site estático)
+  site_root: "documentacao-html"
+
+  # Tema (sempre 'material' para esta skill)
+  theme: "material"
+
+  # Idioma (pt para português)
+  language: "pt"
+
+  # Enable search
+  enable_search: true
+
+  # Habilitar seções (true/false)
+  sections:
+    visao_geral: true
+    requisitos: true
+    apis: true
+    banco_dados: true
+    rastreabilidade: true
+    wireframes: true
+
+# ===================================================================
+# ORDENAÇÃO DE NAVEGAÇÃO
+# ===================================================================
+
+navigation:
+  # Ordem em que as seções aparecem na navegação
+  section_order:
+    - VIS      # Visão
+    - REQ      # Requisitos
+    - API      # APIs
+    - DADOS    # Banco de dados
+    - MIN      # Integrações
+    - RAS      # Rastreabilidade
+
+  # Expandir menu por padrão?
+  expand_menu: true
+
+  # Mostrar números de versão?
+  show_versions: true
+
+# ===================================================================
+# CONFIGURAÇÕES DE BANCO DE DADOS
+# ===================================================================
+
+database:
+  # Caminho para discovery-database.yml (gerado pelo database-mcp)
+  index_file: "documentacao/banco_dados/discovery-database.yml"
+
+  # Diretório onde estão os artefatos de banco
+  metadata_dir: "documentacao/banco_dados"
+
+  # Profile do MCP a usar (se houver múltiplas conexões)
+  mcp_profile: "principal"
+
+  # Gerar índice automático de procedures?
+  auto_index_procedures: true
+
+  # Máximo de tabelas a exibir na página de índice (resumida)
+  max_tables_on_index: 10
+
+# ===================================================================
+# CONFIGURAÇÕES DE RASTREABILIDADE
+# ===================================================================
+
+traceability:
+  # Habilitar geração de matrizes de rastreabilidade
+  enabled: true
+
+  # Usar heurística textual para detectar referências
+  auto_detect_references: true
+
+  # Gerar matriz de risco integrada
+  generate_risk_matrix: true
+
+  # Análise de impacto (qual tabela é afetada por quais requisitos)
+  generate_impact_analysis: true
+
+  # Atualizar automaticamente a cada build
+  auto_update: true
+
+# ===================================================================
+# CONFIGURAÇÕES DE DIAGRAMAS PLANTUML
+# ===================================================================
+
+plantuml:
+  # Habilitar processamento de diagramas
+  enabled: true
+
+  # Servidor PlantUML (remoto por padrão)
+  server: "http://www.plantuml.com/plantuml"
+
+  # Usar servidor local? (útil para offline)
+  # Requer PlantUML instalado localmente
+  use_local_server: false
+  local_server_url: "http://localhost:8080"
+
+  # Tipos de diagrama a processar
+  diagram_types:
+    - plantuml
+    - mermaid
+
+  # Incluir diagramas renderizados no site?
+  include_diagrams: true
+
+  # Cache local de SVGs para evitar re-renders
+  enable_cache: true
+  cache_dir: ".mkdocs_cache/diagrams"
+
+# ===================================================================
+# CONFIGURAÇÕES DE TEMA VISUAL
+# ===================================================================
+
+theme:
+  # Logo corporativa
+  logo: "assets/logo.svg"
+
+  # Ícone de favicon
+  favicon: "assets/logo.svg"
+
+  # Cores principais
+  colors:
+    primary: "#0047ab"
+    secondary: "#f47920"
+    database: "#6f42c1"
+    success: "#28a745"
+    warning: "#ff7625"
+    danger: "#dc3545"
+
+  # Fonte (padrão do Material)
+  font:
+    text: "Roboto"
+    code: "Roboto Mono"
+
+  # Customizar CSS
+  css_files:
+    - "assets/css/integrated-theme.css"
+    - "assets/css/traceability.css"
+
+  # Customizar JavaScript
+  js_files:
+    - "assets/js/lightbox.js"
+    - "assets/js/traceability-links.js"
+
+# ===================================================================
+# EXTENSÕES DE MARKDOWN
+# ===================================================================
+
+markdown_extensions:
+  # Tabelas
+  - tables
+
+  # Rodapé (footnotes)
+  - footnotes
+
+  # Atributos (class, id, etc)
+  - attr_list
+
+  # Listas de definição
+  - def_list
+
+  # Código com números de linha
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+        - name: plantuml
+          class: plantuml
+
+  # Emoji
+  - pymdownx.emoji:
+      emoji_index: pymdownx.emoji.twemoji
+      emoji_generator: pymdownx.emoji.to_svg
+
+# ===================================================================
+# BUILD E DEPLOY
+# ===================================================================
+
+build:
+  # Executar validações strictas
+  strict_mode: true
+
+  # Gerar site map
+  generate_sitemap: true
+
+  # Incluir draft pages
+  include_draft: false
+
+  # Minificar CSS/JS
+  minify: true
+
+# ===================================================================
+# EXEMPLO: Usar no PowerShell
+# ===================================================================
+#
+# Se implementado, o script poderia usar:
+#
+#   $config = ConvertFrom-Yaml (Get-Content 'config-docs-integradas.yaml' -Raw)
+#   $siteName = $config.docs.site_name
+#   $docsRoot = $config.docs.docs_root
+#
+# Por enquanto, edite build-integrated-docs.ps1 diretamente para customizações.

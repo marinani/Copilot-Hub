@@ -1,0 +1,2 @@
+# Dependências para discovery-80-consolidacao
+# (Apenas bibliotecas padrão do Python são usadas, mas pode ser expandido)

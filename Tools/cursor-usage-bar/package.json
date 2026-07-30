@@ -1,0 +1,83 @@
+{
+  "name": "cursor-usage-bar",
+  "displayName": "Cursor Usage Bar",
+  "description": "Mostra na barra de status o uso do plano Cursor (%) e o gasto excedente (sob demanda), sem pedir senha.",
+  "version": "0.1.1",
+  "publisher": "rmiqueletto",
+  "author": {
+    "name": "Rafael Miqueletto"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "cursor",
+    "usage",
+    "billing",
+    "status bar",
+    "overage"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cursorUsageBar.refresh",
+        "title": "Cursor Usage Bar: Atualizar agora"
+      },
+      {
+        "command": "cursorUsageBar.showOutput",
+        "title": "Cursor Usage Bar: Abrir log"
+      }
+    ],
+    "configuration": {
+      "title": "Cursor Usage Bar",
+      "properties": {
+        "cursorUsageBar.pollIntervalSeconds": {
+          "type": "number",
+          "default": 300,
+          "minimum": 60,
+          "description": "Intervalo de atualização automática em segundos (mínimo 60)."
+        },
+        "cursorUsageBar.warningPercent": {
+          "type": "number",
+          "default": 80,
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Percentual a partir do qual a barra fica amarela."
+        },
+        "cursorUsageBar.criticalPercent": {
+          "type": "number",
+          "default": 95,
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Percentual a partir do qual a barra fica vermelha."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "dependencies": {
+    "sql.js": "^1.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.0",
+    "typescript": "^5.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rmiqueletto/cursor-usage-bar"
+  }
+}

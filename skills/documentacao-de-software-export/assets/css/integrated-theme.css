@@ -1,0 +1,578 @@
+﻿/**
+ * integrated-theme.css
+ * Tema CSS customizado para documentacao-de-software-export
+ * Estende Material for MkDocs com:
+ * - Cores corporativas
+ * - Estilos para rastreabilidade cruzada
+ * - Marcadores visuais para tipos de documento
+ * - Layout responsivo para diagramas
+ */
+
+:root {
+  /* Cores principais */
+  --primary-color: #0047ab;
+  --primary-dark: #00338a;
+  --primary-light: #3366dd;
+
+  /* Cores secundárias */
+  --secondary-color: #f47920;
+  --secondary-dark: #d66f0f;
+  --secondary-light: #ff8f3f;
+
+  /* Cores de status */
+  --success-color: #28a745;
+  --warning-color: #ff7625;
+  --danger-color: #dc3545;
+  --info-color: #17a2b8;
+
+  /* Cor específica para banco de dados */
+  --database-color: #6f42c1;
+  --database-light: #8962d8;
+
+  /* Cores de fundo */
+  --bg-light: #f4f5f7;
+  --bg-white: #ffffff;
+  --bg-gray: #e9ecef;
+
+  /* Cores de texto */
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-light: #999999;
+
+  /* Bordas e shadows */
+  --border-color: #ddd;
+  --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-medium: 0 4px 8px rgba(0, 0, 0, 0.15);
+
+  /* Sidebar */
+  --sidebar-bg: #0047ab;
+  --sidebar-text: #ffffff;
+  --sidebar-text-secondary: #b3cfff;
+  --sidebar-hover: rgba(255, 255, 255, 0.1);
+  --sidebar-active: rgba(255, 255, 255, 0.15);
+  --sidebar-border: rgba(255, 255, 255, 0.2);
+}
+
+/* Override cores padrão do Material */
+.md-header {
+  background-color: var(--bg-white);
+  border-bottom: 3px solid var(--primary-color);
+  box-shadow: var(--shadow-light);
+}
+
+.md-header__title {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.md-nav__link--active {
+  color: var(--primary-color);
+  border-left: 3px solid var(--primary-color);
+}
+
+.md-nav__link:hover {
+  color: var(--secondary-color);
+}
+
+/* ======================================================================= */
+/* ESTILOS DO SIDEBAR (MENU LATERAL AZUL)                                 */
+/* ======================================================================= */
+
+.sidebar {
+  background-color: var(--sidebar-bg) !important;
+  border-right: none !important;
+}
+
+.sidebar-header {
+  background-color: var(--primary-dark);
+  border-bottom: 2px solid var(--sidebar-border) !important;
+}
+
+.sidebar-header h2 {
+  color: var(--sidebar-text) !important;
+}
+
+.sidebar-header p {
+  color: var(--sidebar-text-secondary) !important;
+}
+
+.sidebar-header a {
+  color: var(--sidebar-text);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  display: block;
+}
+
+.sidebar-header a:hover {
+  opacity: 0.9;
+}
+
+.nav-section-header {
+  color: var(--sidebar-text-secondary) !important;
+}
+
+.nav-section-header:hover {
+  background-color: var(--sidebar-hover) !important;
+}
+
+.nav-section-header .count {
+  background-color: var(--sidebar-border) !important;
+  color: var(--sidebar-text) !important;
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.toggle-icon {
+    color: var(--sidebar-text-secondary);
+    transition: transform 0.2s ease;
+}
+
+.count-and-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.nav-item {
+  color: var(--sidebar-text-secondary) !important;
+  border-left-color: transparent !important;
+}
+
+.nav-item:hover {
+  background-color: var(--sidebar-hover) !important;
+  color: var(--sidebar-text) !important;
+  border-left-color: var(--sidebar-text-secondary) !important;
+}
+
+.nav-item.active {
+  background-color: var(--sidebar-active) !important;
+  color: var(--sidebar-text) !important;
+  border-left-color: var(--sidebar-text) !important;
+  font-weight: 500;
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4,
+.md-typeset h5,
+.md-typeset h6 {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.md-typeset a {
+  color: var(--primary-light);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--primary-light);
+  transition: color 0.2s ease;
+}
+
+.md-typeset a:hover {
+  color: var(--secondary-color);
+  border-bottom-color: var(--secondary-color);
+}
+
+/* Estilos para tabelas */
+.md-typeset table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+}
+
+.md-typeset table thead {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.md-typeset table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  border: none;
+}
+
+.md-typeset table td {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  vertical-align: top;
+}
+
+.md-typeset table tbody tr:nth-child(odd) {
+  background-color: var(--bg-light);
+}
+
+.md-typeset table tbody tr:hover {
+  background-color: #f0f4ff;
+}
+
+/* Blocos de código */
+.md-typeset code {
+  background-color: var(--bg-gray);
+  color: #c23030;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+.md-typeset pre {
+  background-color: #f5f5f5;
+  border-left: 4px solid var(--primary-color);
+  padding: 1rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.md-typeset pre code {
+  background-color: transparent;
+  color: #333;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Blocos de atenção (blockquote, note, warning, etc) */
+.md-typeset blockquote {
+  border-left: 4px solid var(--primary-color);
+  padding: 0 0 0 1rem;
+  margin: 1rem 0;
+  color: var(--text-secondary);
+}
+
+.admonition {
+  padding: 1rem;
+  margin: 1rem 0;
+  border-left: 4px solid var(--primary-color);
+  background-color: var(--bg-light);
+}
+
+.admonition.note {
+  border-left-color: var(--info-color);
+}
+
+.admonition.warning {
+  border-left-color: var(--warning-color);
+}
+
+.admonition.danger {
+  border-left-color: var(--danger-color);
+}
+
+.admonition.success {
+  border-left-color: var(--success-color);
+}
+
+/* ======================================================================= */
+/* ESTILOS ESPECÍFICOS PARA RASTREABILIDADE                               */
+/* ======================================================================= */
+
+/**
+ * Badges para tipo de documento
+ * Uso: `[REQ]`, `[API]`, `[DADOS]`, `[PROC]`, etc.
+ */
+
+.doc-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  margin: 0 4px 0 0;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.doc-badge-req {
+  background-color: #d4edff;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-light);
+}
+
+.doc-badge-api {
+  background-color: #e1f5ff;
+  color: var(--info-color);
+  border: 1px solid var(--info-color);
+}
+
+.doc-badge-dados {
+  background-color: #f3e5f5;
+  color: var(--database-color);
+  border: 1px solid var(--database-light);
+}
+
+.doc-badge-proc {
+  background-color: #ede7f6;
+  color: #5e35b1;
+  border: 1px solid #7e57c2;
+}
+
+/**
+ * Links de rastreabilidade cruzada
+ * Uso: Links que conectam requisitos a tabelas/procedures
+ */
+
+.trace-link {
+  position: relative;
+  color: var(--primary-light);
+  font-weight: 500;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.trace-link:hover {
+  background-color: #f0f8ff;
+  border-bottom: 2px solid var(--secondary-color);
+}
+
+/* Quando um link é "ativo" (clicado/em foco) */
+.trace-link.active {
+  background-color: #ffebee;
+  border: 1px solid var(--danger-color);
+  color: var(--danger-color);
+}
+
+/**
+ * Caixas de rastreabilidade
+ * Mostram referências de um documento para outro
+ */
+
+.traceability-box {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.traceability-box h4 {
+  margin-top: 0;
+  color: var(--primary-color);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.traceability-box ul {
+  margin: 0.5rem 0;
+  padding-left: 20px;
+}
+
+.traceability-box li {
+  margin: 0.25rem 0;
+  color: var(--text-secondary);
+}
+
+/**
+ * Matrizes de rastreabilidade
+ */
+
+.trace-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.trace-matrix thead {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.trace-matrix th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  border: 1px solid var(--primary-dark);
+}
+
+.trace-matrix td {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  vertical-align: top;
+}
+
+.trace-matrix tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+/* Células com status de rastreamento */
+.trace-status-ok {
+  background-color: #e8f5e9;
+  color: var(--success-color);
+  font-weight: 600;
+}
+
+.trace-status-pending {
+  background-color: #fff3e0;
+  color: var(--warning-color);
+  font-weight: 600;
+}
+
+.trace-status-missing {
+  background-color: #ffebee;
+  color: var(--danger-color);
+  font-weight: 600;
+}
+
+/**
+ * Cards informativos
+ * Para exibir resumos de seções
+ */
+
+.info-card {
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  box-shadow: var(--shadow-light);
+  transition: box-shadow 0.2s ease;
+}
+
+.info-card:hover {
+  box-shadow: var(--shadow-medium);
+}
+
+.info-card h3 {
+  margin-top: 0;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.info-card .icon {
+  font-size: 1.5rem;
+}
+
+/**
+ * Ícones para seções
+ */
+
+.section-icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+/**
+ * Estilos para diagramas PlantUML e Mermaid
+ */
+
+.diagram-container {
+  text-align: center;
+  margin: 1.5rem 0;
+  background-color: var(--bg-light);
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.mermaid {
+  display: flex;
+  justify-content: center;
+}
+
+svg.plantuml-diagram {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Lightbox para diagramas (usado por lightbox.js) */
+.lightbox-overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+}
+
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 90vh;
+  border: 2px solid var(--primary-color);
+  border-radius: 4px;
+}
+
+/**
+ * Rodapé e navegação inferior
+ */
+
+.md-footer {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.md-footer a {
+  color: var(--secondary-light);
+  border-bottom: none;
+}
+
+.md-footer a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+/**
+ * Barra de busca customizada
+ */
+
+.md-search__input {
+  border: 2px solid var(--primary-color);
+}
+
+.md-search__input:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.1);
+}
+
+/**
+ * Responsividade
+ */
+
+@media (max-width: 768px) {
+  .md-typeset table {
+    font-size: 0.8rem;
+  }
+
+  .md-typeset table th,
+  .md-typeset table td {
+    padding: 0.5rem;
+  }
+
+  .doc-badge {
+    margin-bottom: 0.25rem;
+  }
+
+  .diagram-container {
+    padding: 0.5rem;
+  }
+}
+
+/**
+ * Impressão (print)
+ */
+
+@media print {
+  .md-header,
+  .md-nav,
+  .md-footer {
+    display: none;
+  }
+
+  .md-content {
+    margin: 0;
+    padding: 0;
+  }
+
+  .trace-link,
+  a {
+    color: var(--primary-color);
+    text-decoration: underline;
+  }
+
+  .info-card {
+    page-break-inside: avoid;
+    border: 2px solid var(--primary-color);
+  }
+}
